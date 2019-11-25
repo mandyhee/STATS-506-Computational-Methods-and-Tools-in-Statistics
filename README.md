@@ -1,6 +1,6 @@
 # STATS-506-Computational-Methods-and-Tools-in-Statistics
-University of Michigan STATS 506 Computational Methods and Tools in Statistics
-Course page: https://jbhender.github.io/Stats506/F18/Syllabus.html
+University of Michigan STATS 506 Computational Methods and Tools in Statistics   
+Course page: https://jbhender.github.io/Stats506/F18/Syllabus.html        
 Statistics 506 covers a variety of topics related to the use of computing for analyzing, managing, and presenting data. We will cover the topics below along with several case studies:   
 
 #### Overview of computing languages for statistical computing
