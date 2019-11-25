@@ -1,0 +1,67 @@
+---
+title: "STAT506 Problem Set 3"
+author: "Meng-Ni Ho"
+date: "11/17/2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(ggplot2)
+source("ps3_q1.R")
+source("ps3_q2.R")
+```
+
+# Question 1
+## part a: What percent of homes have stucco construction as the major outside wall material within each division? Which division has the highest proportion? Which the lowest?
+
+Answer: highest = Mountain South; lowest: East South Central
+```{r, echo = FALSE}
+print(table1)
+print(plot1)
+```
+
+## Part b: What is average total electricity usage in kilowatt hours in each division? Answer the same question stratified by urban and rural status.
+
+1. Average total electricity usage in kilowatt hours in each division
+```{r, echo = FALSE}
+print(table2_1)
+print(plot2_1)
+```
+
+2. Average total electricity usage in kilowatt hours in each division, stratify by urban and rural status
+```{r, echo = FALSE}
+print(table2_2)
+print(plot2_2)
+```
+
+
+## Part c: Which division has the largest disparity between urban and rural areas in terms of the proportion of homes with internet access?
+
+Answer: Mountain South  
+
+```{r, echo = FALSE}
+print(table3)
+print(plot3)
+```
+
+
+## Part d: What percent of homes have Ceramic or clay tiles as the major outside ROOFTYPE within each region? Which region has the highest proportion? Which the lowest?
+
+Answer: highest = West; lowest: Midwest
+
+```{r, echo = FALSE}
+print(table4)
+print(plot4)
+```
+
+# Question 2
+
+```{r, echo = FALSE}
+print(knitr::kable(result))
+```
+
+Comment: 
+Since FWER should be less than or equal to 0.05, using Bonferroni and Holm perform a better adjustment comparing to BH, BY. Additionally, the multiple correction test is not modify for sensitivity and specificity, therefore, the corrected results in specificity and sensitivity do not differ much from corrected result.
+
+

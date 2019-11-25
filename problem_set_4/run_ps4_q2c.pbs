@@ -1,0 +1,30 @@
+
+ #!/bin/sh
+#PBS -S /bin/sh
+#PBS -N q2c
+#PBS -l procs=4,mem=1gb,walltime=1:00:00
+#PBS -A stats_flux
+#PBS -l qos=flux
+#PBS -q flux
+#PBS -M mandyho@umich.edu
+#PBS -m abe
+#PBS -j oe
+#PBS -V
+#PBS -t 1,2,4
+#
+echo "I ran on:"
+cat $PBS_NODEFILE
+cd ~/stats506_ps4/
+
+# Let PBS handle your output
+
+R CMD BATCH ps4_q2c.R ps4_q2c-X.Rout
+
+
+Rscript ps4_q2c.R cores=2 mcrep=1e4 n=50 sigma = ${PBS_ARRAYID} shape=${shape} rate=${PBS_ARRAYID} \
+>> $path/ps4_q2c${PBS_ARRAYID}.out
+
+
+
+
+

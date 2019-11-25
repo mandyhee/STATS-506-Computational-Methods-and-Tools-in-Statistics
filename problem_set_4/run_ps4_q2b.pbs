@@ -1,0 +1,23 @@
+
+ 
+ #!/bin/sh
+#PBS -S /bin/sh
+#PBS -N q2b
+#PBS -l procs=4,mem=1gb,walltime=1:00:00
+#PBS -A stats_flux
+#PBS -l qos=flux
+#PBS -q flux
+#PBS -M mandyho@umich.edu
+#PBS -m abe
+#PBS -j oe
+#PBS -V
+#
+echo "I ran on:"
+cat $PBS_NODEFILE
+cd ~/stats506_ps4/
+
+
+# Let PBS handle your output
+
+R CMD BATCH ps4_q2b.R ps4_q2b.Rout
+

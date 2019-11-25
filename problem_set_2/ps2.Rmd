@@ -1,0 +1,127 @@
+---
+title: "STAT 506 problem set 2 Meng-Ni Ho"
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(stargazer)
+source("ps2_q3.R")
+```
+
+# Question 1: estimates, replicate standard error, 95% confidence interval for recs2015 data
+1. Electricity usage in kilowatt hours: kwh
+2. Natural gas usage, in hundreds of cubic feet: cufeetng
+3. Propane usage, in gallons: gallonlp
+4. Fuel oil or kerosene usage, in gallons: gallonfo
+
+
+
+```{r table, echo=FALSE}
+recs = read.csv("recs2015_usage.csv")
+recs$lower_bound = recs$estimate - qnorm(.975)*recs$replicate_standard_error
+recs$upper_bound = recs$estimate + qnorm(.975)*recs$replicate_standard_error
+recs$estimate = round(recs$estimate, digits = 2)
+recs$variance = round(recs$variance, digits = 2)
+recs$replicate_standard_error = round(recs$replicate_standard_error, digits = 2)
+recs$lower_bound = round(recs$lower_bound, digits = 2)
+recs$upper_bound = round(recs$upper_bound, digits = 2)
+
+recs = kable(recs)
+recs
+```
+
+#Question 2: fitting model using stata
+representative age in part b is calculated using R
+
+#Question 3: fitting model using R
+##Part b:
+* model1: null model, BIC = 1533.407
+  1. dependent variable: probability of individual lose their primary upper right 2nd bicuspid (outcome)
+  2. independent variable: age in months (ridagem)
+
+```{r, echo = FALSE}
+model1
+```
+
+* Use fitted model to estimate ages (in months) in p = 0.25, 0.50, 0.75
+  1. when p = 0.25
+```{r, echo = FALSE}
+age25
+```
+  2. when p = 0.50
+```{r, echo = FALSE}
+age50
+```
+  3. when p = 0.75
+```{r, echo = FALSE}
+age75
+```
+
+* representative age (25%, 75%) in years:
+```{r, echo = FALSE}
+age
+```
+
+
+##Part C
+* model2: BIC = 1542.055 
+add gender (riagendr) to model 1, since BIC increase, gender is excluded from the model
+
+
+* model3: BIC = 1542.285
+add race_1 (race = Mexican is coded 1, all other race coded 0) to the model1, since BIC increase, race_1 is excluded from the model
+
+* model4: BIC = 1541.932
+add race_2 (other hispanic and other race is coded 1, all other race coded 0) to model1, since BIC increase from model1, race_2 is excluded from the model
+
+* model5: BIC = 1529.281
+add race_3 (non-hispanic black is coded 1, all other race coded 0) to model4, since BIC decrease from model1, race_3 is retained in the model
+
+* model6 (final model): BIC = 1462.895 
+add poverty income ratio (indfmpir) to model5, since BIC decrease from model5, poverty income ratio is retained in the model
+
+final model:   
+```{r, echo = FALSE}
+model6
+```
+
+##Part D
+1. Adjusted predictions at the mean (for other values) at each of the representative ages determined in part b.
+
+* adjsuted predictions at representative age = 8
+```{r, echo = F}
+pr_age25
+```
+
+* adjsuted predictions at representative age = 12
+```{r, echo = F}
+pr_age75
+```
+
+
+2. The marginal effects at the mean of any retained categorical variables at the same representative ages.
+* marginal effect at representative age = 8
+```{r, echo = F}
+mse_25
+```
+
+* marginal effect at representative age = 12
+```{r, echo = F}
+mse_75
+```
+
+
+3. The average marginal effect of any retained categorical variables at the representative ages.
+
+```{r, echo = F}
+ame
+```
+
+
+
+

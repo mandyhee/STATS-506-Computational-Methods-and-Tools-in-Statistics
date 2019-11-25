@@ -1,0 +1,77 @@
+
+R version 3.3.3 (2017-03-06) -- "Another Canoe"
+Copyright (C) 2017 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(doParallel)
+Loading required package: foreach
+Loading required package: iterators
+Loading required package: parallel
+> library(parallel)
+> library(foreach)
+> source("ps4_q2a.R")
+
+Attaching package: ‘dplyr’
+
+The following objects are masked from ‘package:stats’:
+
+    filter, lag
+
+The following objects are masked from ‘package:base’:
+
+    intersect, setdiff, setequal, union
+
+
+Attaching package: ‘data.table’
+
+The following objects are masked from ‘package:dplyr’:
+
+    between, first, last
+
+> 
+> 
+> ncores = 4
+> cl = makeCluster(ncores)
+> registerDoParallel(cl)
+> 
+> # do job
+> 
+> rho = seq(-0.75, 0.75, 0.25)
+> sigma = c(0.25, 0.5, 1)
+> 
+> result_q4b = foreach(i=sigma, .packages = c('data.table', 'dplyr')) %:%
++   foreach(j = rho, .packages =  c('data.table', 'dplyr')) %dopar% {
++   p2b = func(rho = j , sigma = i)
++ }
+> 
+> 
+> q2b = NULL
+> for(i in 1:length(result_q4b)){
++   q2b = rbind(q2b, do.call("rbind", result_q4b[[i]]))
++ }
+> 
+> 
+> save(q2b, file = "results_q4b.RData")
+> 
+> 
+> 
+> 
+> 
+> 
+> proc.time()
+   user  system elapsed 
+  2.204   0.220  10.745 

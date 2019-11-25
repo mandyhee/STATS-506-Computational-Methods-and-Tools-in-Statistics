@@ -1,0 +1,301 @@
+------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  /Users/mandy/Desktop/STAT506/ps2/ps2_q2.log
+  log type:  text
+ opened on:  16 Oct 2018, 09:50:02
+
+. fdause DEMO_D.XPT
+
+. save demo
+file demo.dta saved
+
+. fdause OHX_D.XPT
+
+. save ohx
+file ohx.dta saved
+
+. *part a: merge demo and ohx by seqn*
+
+. use demo
+
+. merge 1:1 seqn using ohx
+
+    Result                           # of obs.
+    -----------------------------------------
+    not matched                         2,043
+        from master                     2,043  (_merge==1)
+        from using                          0  (_merge==2)
+
+    matched                             8,305  (_merge==3)
+    -----------------------------------------
+
+. save _merge
+file _merge.dta saved
+
+. * part b: logistic regression 
+
+. 
+. use _merge
+
+. drop if ohx04htc == 9   
+(5 observations deleted)
+
+. drop if ohx04htc == .
+(2,661 observations deleted)
+
+. recode ohx04htc (1 = 0) (2 4 5 =1), gen(outcome) 
+(7682 differences between ohx04htc and outcome)
+
+. * check if outcome successfully created
+
+. tab ohx04htc outcome 
+
+           |  RECODE of ohx04htc
+     Tooth |   (Tooth count: #4)
+ count: #4 |         0          1 |     Total
+-----------+----------------------+----------
+         1 |       962          0 |       962 
+         2 |         0      5,584 |     5,584 
+         4 |         0      1,090 |     1,090 
+         5 |         0         46 |        46 
+-----------+----------------------+----------
+     Total |       962      6,720 |     7,682 
+
+
+. 
+. quietly glm outcome ridagemn, family(binomial) link(logit)
+
+. estat ic   
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563         .  -757.7724       2    1519.545   1533.407
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. * part c: add covariate 
+
+. 
+. 
+. quietly glm outcome ridagemn riagendr, family(binomial) link(logit)
+
+. estat ic 
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563         .  -757.6309       3    1521.262   1542.055
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. * remove gender  
+
+. 
+. * create race categorical variables
+
+. recode ridreth1 (3 = 0) (1 = 1) (2 5 = 2) (4 = 3), gen(race) 
+(5472 differences between ridreth1 and race)
+
+. tab ridreth1 race
+
+Race/Ethni |    RECODE of ridreth1 (Race/Ethnicity -
+    city - |                   Recode)
+    Recode |         0          1          2          3 |     Total
+-----------+--------------------------------------------+----------
+         1 |         0      1,976          0          0 |     1,976 
+         2 |         0          0        234          0 |       234 
+         3 |     3,073          0          0          0 |     3,073 
+         4 |         0          0          0      2,041 |     2,041 
+         5 |         0          0        358          0 |       358 
+-----------+--------------------------------------------+----------
+     Total |     3,073      1,976        592      2,041 |     7,682 
+
+
+. 
+. recode race (1 = 1) (0 = 0) (2 = 0) (3 = 0), gen(race_1)
+(2633 differences between race and race_1)
+
+. recode race (1 = 0) (0 = 0) (2 = 1) (3 = 0), gen(race_2)
+(4609 differences between race and race_2)
+
+. recode race (1 = 0) (0 = 0) (2 = 0) (3 = 1), gen(race_3)
+(4609 differences between race and race_3)
+
+. 
+. save merge1
+file merge1.dta saved
+
+. 
+. * model fitting
+
+. quietly glm outcome ridagemn race_1, family(binomial) link(logit)
+
+. estat ic 
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563         .  -757.7458       3    1521.492   1542.285
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. * remove race_1
+
+. 
+. quietly glm outcome ridagemn race_2, family(binomial) link(logit)
+
+. estat ic 
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563         .  -757.5694       3    1521.139   1541.932
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. * remove race_2
+
+. 
+. quietly glm outcome ridagemn race_3, family(binomial) link(logit)
+
+. estat ic 
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,563         .  -751.2437       3    1508.487   1529.281
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. * retain race_3
+
+. 
+. 
+. quietly glm outcome ridagemn race_3 indfmpir, family(binomial) link(logit)
+
+. estat ic 
+
+Akaike's information criterion and Bayesian information criterion
+
+-----------------------------------------------------------------------------
+       Model |        Obs  ll(null)  ll(model)      df         AIC        BIC
+-------------+---------------------------------------------------------------
+           . |      7,246         .  -713.6709       4    1435.342   1462.895
+-----------------------------------------------------------------------------
+               Note: N=Obs used in calculating BIC; see [R] BIC note.
+
+. * retain pir
+
+. * final model
+
+. * part e 
+
+. svyset sdmvpsu [pweight=wtmec2yr], strata(sdmvstra) vce(linearized)
+
+      pweight: wtmec2yr
+          VCE: linearized
+  Single unit: missing
+     Strata 1: sdmvstra
+         SU 1: sdmvpsu
+        FPC 1: <zero>
+
+. svy: glm outcome ridagemn race_3 indfmpir, family(binomial) link(logit)
+(running glm on estimation sample)
+
+Survey: Generalized linear models
+
+Number of strata   =        15                Number of obs     =        7,246
+Number of PSUs     =        30                Population size   =  240,124,554
+                                              Design df         =           15
+
+------------------------------------------------------------------------------
+             |             Linearized
+     outcome |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    ridagemn |   .0619412   .0072289     8.57   0.000      .046533    .0773493
+      race_3 |   .5434953   .1461944     3.72   0.002     .2318894    .8551012
+    indfmpir |  -.0811818   .0521914    -1.56   0.141    -.1924251    .0300616
+       _cons |  -7.516036   .8614792    -8.72   0.000    -9.352236   -5.679837
+------------------------------------------------------------------------------
+
+. 
+. * create table: compart final model vs final model using survey weight
+
+. glm outcome ridagemn race_3 indfmpir, family(binomial) link(logit)
+
+Iteration 0:   log likelihood = -2253.2384  
+Iteration 1:   log likelihood = -1476.2126  
+Iteration 2:   log likelihood = -757.30742  
+Iteration 3:   log likelihood =  -714.5343  
+Iteration 4:   log likelihood = -713.67314  
+Iteration 5:   log likelihood = -713.67088  
+Iteration 6:   log likelihood = -713.67088  
+
+Generalized linear models                         No. of obs      =      7,246
+Optimization     : ML                             Residual df     =      7,242
+                                                  Scale parameter =          1
+Deviance         =  1427.341759                   (1/df) Deviance =   .1970922
+Pearson          =  44631906.85                   (1/df) Pearson  =   6162.926
+
+Variance function: V(u) = u*(1-u)                 [Bernoulli]
+Link function    : g(u) = ln(u/(1-u))             [Logit]
+
+                                                  AIC             =   .1980875
+Log likelihood   = -713.6708793                   BIC             =  -62941.04
+
+------------------------------------------------------------------------------
+             |                 OIM
+     outcome |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    ridagemn |   .0713748   .0027062    26.37   0.000     .0660707    .0766789
+      race_3 |    .494981   .1489243     3.32   0.001     .2030948    .7868672
+    indfmpir |  -.1190731    .045378    -2.62   0.009    -.2080124   -.0301338
+       _cons |  -8.460302   .3510206   -24.10   0.000    -9.148289   -7.772314
+------------------------------------------------------------------------------
+
+. outreg2 using compare.doc, replace ctitle(final model) 
+compare.doc
+dir : seeout
+
+. 
+. svy: glm outcome ridagemn race_3 indfmpir, family(binomial) link(logit)
+(running glm on estimation sample)
+
+Survey: Generalized linear models
+
+Number of strata   =        15                Number of obs     =        7,246
+Number of PSUs     =        30                Population size   =  240,124,554
+                                              Design df         =           15
+
+------------------------------------------------------------------------------
+             |             Linearized
+     outcome |      Coef.   Std. Err.      t    P>|t|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+    ridagemn |   .0619412   .0072289     8.57   0.000      .046533    .0773493
+      race_3 |   .5434953   .1461944     3.72   0.002     .2318894    .8551012
+    indfmpir |  -.0811818   .0521914    -1.56   0.141    -.1924251    .0300616
+       _cons |  -7.516036   .8614792    -8.72   0.000    -9.352236   -5.679837
+------------------------------------------------------------------------------
+
+. outreg2 using compare.doc, append ctitle(final model using survey weights)
+compare.doc
+dir : seeout
+
+. * difference: by looking at the table (compare.doc), there are around 0.01 difference be
+> tween the coefficients in final model vs final model using survey weights 
+
+. 
+. 
+. 
+. 

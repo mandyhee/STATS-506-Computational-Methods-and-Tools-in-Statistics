@@ -1,0 +1,144 @@
+---
+title: "Stat506_PS1 Part 2 & 3   Meng-Ni Ho" 
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+library(tidyr)
+library(sqldf)
+library(nycflights13)
+library(ggplot2)
+setwd("~/Desktop/STAT506/ps1")
+source("ps1_q2.R")
+source("ps1_q3.R")
+```
+
+## Question 2a
+Which airlines were responsible for at least 1% of the flights 
+departing any of the three NYC airports between January 1 and October 31, 2013?
+
+```{r, echo = FALSE}
+q2_1_2
+```
+
+
+## Question 2b
+Among the airlines from part “a”, compare the number and percent of annual flights in the first 10 months of 2013 and the first 10 months of 2014. 
+
+```{r, echo = FALSE}
+merge1
+```
+
+1. Which airline showed the largest increase?
+```{r}
+sqldf("select carrier, name, max(p_change) from merge1")
+```
+
+2. Which airline showed the largest decrease?
+```{r}
+sqldf("select carrier, name, min(p_change) from merge1")
+```
+
+3. Why do some airlines show an increase in the percent of flights but a decrease in the number of flights?
+
+Becasue total flights in 2014 decreased compared to 2013, then for the airlines that showed decreased flights, their percentage will increase.
+
+
+
+
+##Question 2c
+Among of the three NYC airports, produce a table showing the percent of flights each airline is responsible for. 
+Limit the table to the airlines identified in part a and include confidence intervals for your estimates. 
+
+```{r, echo = FALSE}
+merge2
+```
+
+* Which airline is the largest carrier at each airport?
+```{r}
+sqldf("select origin, carrier, max(proportion) as max_ from merge2 group by origin")
+```
+
+
+##Question 3a
+What percent of homes have stucco construction as the major outside wall material within each division? 
+
+```{r, echo = FALSE}
+stucco_wall_prop
+```
+
+
+1. Which division has the highest proportion?
+```{r}
+sqldf("select DIVISION, max(pct) as max_percentage from stucco_wall_prop")
+```
+
+2. Which division has the lowest proportion?
+```{r}
+sqldf("select DIVISION, min(pct) as min_percentage from stucco_wall_prop")
+```
+
+
+
+```{r plot, echo = FALSE}
+g_q3_1
+```
+
+* Plot: % of having STUCCO as major walltype in each division
+
+
+
+## Question 3b
+1. What is average total electricity usage in kilowatt hours in each division? 
+```{r, echo = FALSE}
+q3_2_1
+```
+
+
+
+```{r, echo = FALSE}
+g_q3_2
+```
+
+* Plot: Average electricity usage in each division
+
+
+2. What is average total electricity usage in kilowatt hours in each division stratified by urban and rural? 
+
+```{r, echo = FALSE}
+q3_2_2
+```
+
+
+
+
+```{r, echo = FALSE}
+g_q3_2_2
+```
+* Plot: average total electricity usage in kilowatt hours in each division stratified by urban and rural
+
+
+## Question 3c
+Which division has the largest disparity between urban and rural areas in terms of proportion of homes with internet access?
+
+* Table showing disparity (urban vs rural) in terms of the proportion of homes with internet access?
+```{r, echo = FALSE}
+disparity
+```
+
+
+* Which division has the largest disparity between urban and rural areas in terms of the proportion of homes with internet access?
+```{r, echo = FALSE}
+sqldf("select DIVISION, max(disparity) from disparity")
+```
+
+```{r, echo = FALSE}
+g_q3_3
+```
+* Plot: proportion of homes with internet access between urban and rural in each division
+

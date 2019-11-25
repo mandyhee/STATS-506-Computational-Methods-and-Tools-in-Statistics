@@ -1,0 +1,33 @@
+---
+title: "Problem Set 4"
+author: "Meng-Ni Ho"
+date: "12/9/2018"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+source("ps4_q1.R")
+source("ps4_q2a.R")
+source("ps4_q2b.R")
+```
+
+# Question 1
+
+```{r, echo = FALSE}
+kable(q1[1:50,])
+```
+
+# Question 2a
+```{r, echo = FALSE}
+kable(q2a)
+```
+
+# Question 2b
+```{r, echo = FALSE}
+kable(q2b)
+```
+
